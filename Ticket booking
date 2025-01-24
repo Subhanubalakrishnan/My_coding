@@ -1,0 +1,142 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+// Define the structure of a seat
+struct Seat {
+    int seatNumber;
+    bool isBooked;
+    string passengerName;
+};
+
+// Class to manage the ticket booking system
+class TicketBookingSystem {
+private:
+    vector<Seat> seats;
+
+public:
+    // Constructor to initialize seats
+    TicketBookingSystem(int totalSeats) {
+        for (int i = 1; i <= totalSeats; i++) {
+            seats.push_back({i, false, ""});
+        }
+    }
+
+    // Function to display available seats
+    void showAvailableSeats() {
+        cout << "\nAvailable Seats:\n";
+        for (const auto &seat : seats) {
+            if (!seat.isBooked) {
+                cout << "Seat " << seat.seatNumber << " ";
+            }
+        }
+        cout << endl;
+    }
+
+    // Function to book a ticket
+    void bookTicket() {
+        int seatNumber;
+        string passengerName;
+
+        cout << "\nEnter seat number to book: ";
+        cin >> seatNumber;
+
+        if (seatNumber < 1 || seatNumber > seats.size()) {
+            cout << "Invalid seat number. Try again.\n";
+            return;
+        }
+
+        if (seats[seatNumber - 1].isBooked) {
+            cout << "Seat " << seatNumber << " is already booked.\n";
+            return;
+        }
+
+        cout << "Enter passenger name: ";
+        cin.ignore(); // Clear the input buffer
+        getline(cin, passengerName);
+
+        seats[seatNumber - 1].isBooked = true;
+        seats[seatNumber - 1].passengerName = passengerName;
+        cout << "Ticket booked successfully for " << passengerName << " at seat " << seatNumber << ".\n";
+    }
+
+    // Function to cancel a booking
+    void cancelTicket() {
+        int seatNumber;
+
+        cout << "\nEnter seat number to cancel: ";
+        cin >> seatNumber;
+
+        if (seatNumber < 1 || seatNumber > seats.size()) {
+            cout << "Invalid seat number. Try again.\n";
+            return;
+        }
+
+        if (!seats[seatNumber - 1].isBooked) {
+            cout << "Seat " << seatNumber << " is not booked.\n";
+            return;
+        }
+
+        seats[seatNumber - 1].isBooked = false;
+        cout << "Booking for seat " << seatNumber << " (Passenger: " 
+             << seats[seatNumber - 1].passengerName << ") has been canceled.\n";
+        seats[seatNumber - 1].passengerName = "";
+    }
+
+    // Function to display all bookings
+    void showBookings() {
+        cout << "\nCurrent Bookings:\n";
+        for (const auto &seat : seats) {
+            if (seat.isBooked) {
+                cout << "Seat " << seat.seatNumber << " - " << seat.passengerName << "\n";
+            }
+        }
+    }
+};
+
+// Main function
+int main() {
+    int totalSeats;
+
+    cout << "Welcome to the Ticket Booking System!\n";
+    cout << "Enter the total number of seats: ";
+    cin >> totalSeats;
+
+    TicketBookingSystem system(totalSeats);
+
+    int choice;
+
+    do {
+        cout << "\nMenu:\n";
+        cout << "1. Show Available Seats\n";
+        cout << "2. Book a Ticket\n";
+        cout << "3. Cancel a Booking\n";
+        cout << "4. Show All Bookings\n";
+        cout << "5. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                system.showAvailableSeats();
+                break;
+            case 2:
+                system.bookTicket();
+                break;
+            case 3:
+                system.cancelTicket();
+                break;
+            case 4:
+                system.showBookings();
+                break;
+            case 5:
+                cout << "Thank you for using the Ticket Booking System!\n";
+                break;
+            default:
+                cout << "Invalid choice. Please try again.\n";
+        }
+    } while (choice != 5);
+
+    return 0;
+}
